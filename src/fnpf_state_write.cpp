@@ -53,40 +53,43 @@ void fnpf_state::write(lexer *p, fdm_fnpf *c, ghostcell *pgc)
     if(p->P15>=1)
     num = printcount;
 
-    
-    // result file
-    filename(p,c,pgc,num);
-	 
-	ofstream result;
-	result.open(name, ios::binary);
+    if(p->P45<0 || p->mpirank==p->P45)
+    {
+        
+        // result file
+        filename(p,c,pgc,num);
+         
+        ofstream result;
+        result.open(name, ios::binary);
 
-    
-    SLICELOOP4
-    {
-    ffn=float(c->eta(i,j));
-    result.write((char*)&ffn, sizeof (float));
-    } 
-    
-    FLOOP
-    {
-    ffn=float(c->U[FIJK]);
-    result.write((char*)&ffn, sizeof (float));
-    } 
+        
+        SLICELOOP4
+        {
+        ffn=float(c->eta(i,j));
+        result.write((char*)&ffn, sizeof (float));
+        } 
+        
+        FLOOP
+        {
+        ffn=float(c->U[FIJK]);
+        result.write((char*)&ffn, sizeof (float));
+        } 
 
-	FLOOP
-    {
-    ffn=float(c->V[FIJK]);
-    result.write((char*)&ffn, sizeof (float));
-    } 
+        FLOOP
+        {
+        ffn=float(c->V[FIJK]);
+        result.write((char*)&ffn, sizeof (float));
+        } 
 
-	FLOOP
-    {
-    ffn=float(c->W[FIJK]);
-    result.write((char*)&ffn, sizeof (float));
-    } 
-	
-	
-	result.close();
+        FLOOP
+        {
+        ffn=float(c->W[FIJK]);
+        result.write((char*)&ffn, sizeof (float));
+        } 
+        
+        
+        result.close();
+    }
 	
 	++printcount;
 }
